@@ -21,12 +21,20 @@
 
         <TextView
             android:id="@+id/last_operation_text_view"
-            android:layout_gravity="fill_horizontal"
+            android:layout_width="380dp"
             android:gravity="end"
-            android:layout_column="1"
-            android:layout_columnSpan="3"
+            android:layout_columnSpan="4"
             tools:text="25 + 48"
             android:textSize="20sp"
+            android:textColor="@color/grey_text"/>
+
+        <TextView
+            android:id="@+id/input_text_view"
+            android:layout_width="380dp"
+            android:gravity="end"
+            android:layout_columnSpan="4"
+            tools:text="123456"
+            android:textSize="32sp"
             android:textColor="@color/grey_text"/>
 
         <Button
@@ -35,19 +43,9 @@
             android:textSize="30sp"
             android:backgroundTint="@color/red" />
 
-        <TextView
-            android:id="@+id/input_text_view"
-            android:layout_gravity="fill_horizontal"
-            android:gravity="end"
+        <Space
             android:layout_column="1"
             android:layout_columnSpan="3"
-            tools:text="123456"
-            android:textSize="32sp"
-            android:textColor="@color/grey_text"/>
-
-        <Space
-            android:layout_columnSpan="4"
-            android:layout_gravity="fill_horizontal"
             android:layout_height="80dp"/>
 
         <Button
@@ -71,11 +69,11 @@
             android:textColor="@color/grey_text"
             android:backgroundTint="@color/grey_operations"/>
 
-        <ImageButton
+        <Button
             android:id="@+id/backspace_button"
-            android:src="@drawable/ic_baseline_backspace_24"
-            android:layout_width="match_parent"
-            android:layout_gravity="fill_horizontal|fill_vertical"
+            android:drawableLeft="@drawable/ic_baseline_backspace_24"
+            android:layout_gravity="fill_vertical"
+            android:paddingLeft="27dp"
             android:backgroundTint="@color/grey_operations"/>
 
         <Button

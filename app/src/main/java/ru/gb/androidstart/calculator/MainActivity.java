@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private Button reverseButton;
     private Button percentButton;
     private Button clearButton;
-    private ImageButton backspaceButton;
+    private Button backspaceButton;
     private TextView inputTextView;
     private TextView lastOperationTextView;
 
