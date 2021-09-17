@@ -1,7 +1,6 @@
 package ru.gb.androidstart.calculator;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -37,31 +36,12 @@ public class MainActivity extends AppCompatActivity {
     private double number;
     private boolean isFloatingPoint;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initializeViews();
-        numberStringBuilder = new StringBuilder();
-
-        zeroButton.setOnClickListener(v -> {if (inputTextView.getText() == "" || number != 0 ) typeNumber(zeroButton);});
-        oneButton.setOnClickListener(v -> typeNumber(oneButton));
-        twoButton.setOnClickListener(v -> typeNumber(twoButton));
-        threeButton.setOnClickListener(v -> typeNumber(threeButton));
-        fourButton.setOnClickListener(v -> typeNumber(fourButton));
-        fiveButton.setOnClickListener(v -> typeNumber(fiveButton));
-        sixButton.setOnClickListener(v -> typeNumber(sixButton));
-        sevenButton.setOnClickListener(v -> typeNumber(sevenButton));
-        eightButton.setOnClickListener(v -> typeNumber(eightButton));
-        nineButton.setOnClickListener(v -> typeNumber(nineButton));
-        pointButton.setOnClickListener(v -> {
-            if (inputTextView.getText() == "" || !isFloatingPoint) {
-                numberStringBuilder.append(".");
-                isFloatingPoint = true;
-            }
-            inputTextView.setText(inputTextView.getText() + ",");
-        });
+        doButtonsClick();
 
     }
 
@@ -87,22 +67,50 @@ public class MainActivity extends AppCompatActivity {
         percentButton = findViewById(R.id.percent_button);
         backspaceButton = findViewById(R.id.backspace_button);
         clearButton = findViewById(R.id.clear_all_button);
+        numberStringBuilder = new StringBuilder();
+    }
+
+    public void doButtonsClick() {
+        zeroButton.setOnClickListener(v -> {
+            if (inputTextView.getText() == "" || number != 0 || isFloatingPoint) {
+                typeNumber(zeroButton);
+            }
+        });
+        oneButton.setOnClickListener(v -> typeNumber(oneButton));
+        twoButton.setOnClickListener(v -> typeNumber(twoButton));
+        threeButton.setOnClickListener(v -> typeNumber(threeButton));
+        fourButton.setOnClickListener(v -> typeNumber(fourButton));
+        fiveButton.setOnClickListener(v -> typeNumber(fiveButton));
+        sixButton.setOnClickListener(v -> typeNumber(sixButton));
+        sevenButton.setOnClickListener(v -> typeNumber(sevenButton));
+        eightButton.setOnClickListener(v -> typeNumber(eightButton));
+        nineButton.setOnClickListener(v -> typeNumber(nineButton));
+        pointButton.setOnClickListener(v -> typePoint());
     }
 
     public void typeNumber(Button button) {
-        if (number == 0) {
-            inputTextView.setText("");
-            numberStringBuilder.setLength(0);
-            digitCounter = 0;
-        }
         if (digitCounter < 16) {
             numberStringBuilder.append(button.getText());
             digitCounter++;
         }
         number = Double.parseDouble(numberStringBuilder.toString());
-        DecimalFormat df = new DecimalFormat("###,###.###############",
-                DecimalFormatSymbols.getInstance(new Locale("ru", "RU")));
-        df.setMaximumFractionDigits(15);
-        inputTextView.setText(df.format(number));
+        if (number == 0 && isFloatingPoint) {
+            inputTextView.setText(numberStringBuilder.toString().replace(".", ","));
+        } else {
+            DecimalFormat df = new DecimalFormat("###,###.###############",
+                    DecimalFormatSymbols.getInstance(new Locale("ru", "RU")));
+            inputTextView.setText(df.format(number));
+        }
+    }
+
+    public void typePoint() {
+        if (numberStringBuilder.length() == 0) {
+            zeroButton.performClick();
+        }
+        if (!isFloatingPoint) {
+            numberStringBuilder.append(".");
+            isFloatingPoint = true;
+            inputTextView.setText(inputTextView.getText() + ",");
+        }
     }
 }
