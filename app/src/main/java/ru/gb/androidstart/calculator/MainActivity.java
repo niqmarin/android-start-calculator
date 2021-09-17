@@ -4,8 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private Button sevenButton;
     private Button eightButton;
     private Button nineButton;
+    private Button pointButton;
     private Button plusButton;
     private Button minusButton;
     private Button multiplyButton;
@@ -29,13 +32,36 @@ public class MainActivity extends AppCompatActivity {
     private Button backspaceButton;
     private TextView inputTextView;
     private TextView lastOperationTextView;
+    private int digitCounter = 0;
+    private StringBuilder numberStringBuilder;
+    private double number;
+    private boolean isFloatingPoint;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initializeViews();
+        numberStringBuilder = new StringBuilder();
+
+        zeroButton.setOnClickListener(v -> {if (inputTextView.getText() == "" || number != 0 ) typeNumber(zeroButton);});
+        oneButton.setOnClickListener(v -> typeNumber(oneButton));
+        twoButton.setOnClickListener(v -> typeNumber(twoButton));
+        threeButton.setOnClickListener(v -> typeNumber(threeButton));
+        fourButton.setOnClickListener(v -> typeNumber(fourButton));
+        fiveButton.setOnClickListener(v -> typeNumber(fiveButton));
+        sixButton.setOnClickListener(v -> typeNumber(sixButton));
+        sevenButton.setOnClickListener(v -> typeNumber(sevenButton));
+        eightButton.setOnClickListener(v -> typeNumber(eightButton));
+        nineButton.setOnClickListener(v -> typeNumber(nineButton));
+        pointButton.setOnClickListener(v -> {
+            if (inputTextView.getText() == "" || !isFloatingPoint) {
+                numberStringBuilder.append(".");
+                isFloatingPoint = true;
+            }
+            inputTextView.setText(inputTextView.getText() + ",");
+        });
 
     }
 
@@ -52,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         sevenButton = findViewById(R.id.seven_button);
         eightButton = findViewById(R.id.eight_button);
         nineButton = findViewById(R.id.nine_button);
+        pointButton = findViewById(R.id.point_button);
         plusButton = findViewById(R.id.plus_button);
         minusButton = findViewById(R.id.minus_button);
         multiplyButton = findViewById(R.id.multiply_button);
@@ -60,5 +87,22 @@ public class MainActivity extends AppCompatActivity {
         percentButton = findViewById(R.id.percent_button);
         backspaceButton = findViewById(R.id.backspace_button);
         clearButton = findViewById(R.id.clear_all_button);
+    }
+
+    public void typeNumber(Button button) {
+        if (number == 0) {
+            inputTextView.setText("");
+            numberStringBuilder.setLength(0);
+            digitCounter = 0;
+        }
+        if (digitCounter < 16) {
+            numberStringBuilder.append(button.getText());
+            digitCounter++;
+        }
+        number = Double.parseDouble(numberStringBuilder.toString());
+        DecimalFormat df = new DecimalFormat("###,###.###############",
+                DecimalFormatSymbols.getInstance(new Locale("ru", "RU")));
+        df.setMaximumFractionDigits(15);
+        inputTextView.setText(df.format(number));
     }
 }
