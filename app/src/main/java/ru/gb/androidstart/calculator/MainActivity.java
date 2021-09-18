@@ -86,6 +86,12 @@ public class MainActivity extends AppCompatActivity {
         eightButton.setOnClickListener(v -> typeNumber(eightButton));
         nineButton.setOnClickListener(v -> typeNumber(nineButton));
         pointButton.setOnClickListener(v -> typePoint());
+        clearButton.setOnClickListener(v -> {
+            lastOperationTextView.setText("");
+            clear();
+        });
+        backspaceButton.setOnClickListener(v -> deleteLastChar());
+        backspaceButton.setOnLongClickListener(v -> clear());
     }
 
     public void typeNumber(Button button) {
@@ -93,6 +99,10 @@ public class MainActivity extends AppCompatActivity {
             numberStringBuilder.append(button.getText());
             digitCounter++;
         }
+        showNumber();
+    }
+
+    public void showNumber() {
         number = Double.parseDouble(numberStringBuilder.toString());
         if (number == 0 && isFloatingPoint) {
             inputTextView.setText(numberStringBuilder.toString().replace(".", ","));
@@ -111,6 +121,25 @@ public class MainActivity extends AppCompatActivity {
             numberStringBuilder.append(".");
             isFloatingPoint = true;
             inputTextView.setText(inputTextView.getText() + ",");
+        }
+    }
+
+    public boolean clear() {
+        inputTextView.setText("");
+        number = 0;
+        numberStringBuilder.setLength(0);
+        isFloatingPoint = false;
+        digitCounter = 0;
+        return true;
+    }
+
+    public void deleteLastChar() {
+        if (numberStringBuilder.length() > 0) {
+            if (numberStringBuilder.charAt(numberStringBuilder.length() - 1) == '.') {
+                isFloatingPoint = false;
+            }
+            numberStringBuilder.setLength(numberStringBuilder.length() - 1);
+            showNumber();
         }
     }
 }
