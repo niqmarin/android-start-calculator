@@ -35,7 +35,11 @@ public class MainActivity extends AppCompatActivity {
     private int digitCounter = 0;
     private StringBuilder numberStringBuilder;
     private double currentNumber;
+    private double firstNumber;
+    private double secondNumber;
     private boolean isPointClicked;
+    private boolean isCalculated;
+    private char operation;
     private String lastOperation = "";
     private DecimalFormat decimalFormat;
 
@@ -94,9 +98,19 @@ public class MainActivity extends AppCompatActivity {
         clearButton.setOnClickListener(v -> clearAll());
         backspaceButton.setOnClickListener(v -> deleteLastChar());
         backspaceButton.setOnLongClickListener(v -> clear());
+        plusButton.setOnClickListener(v -> getBasicOperation(plusButton));
+        minusButton.setOnClickListener(v -> getBasicOperation(minusButton));
+        multiplyButton.setOnClickListener(v -> getBasicOperation(multiplyButton));
+        divideButton.setOnClickListener(v -> getBasicOperation(divideButton));
+        percentButton.setOnClickListener(v -> calcPercent());
+        negateButton.setOnClickListener(v -> negateNumber());
+        equalsButton.setOnClickListener(v -> calculate());
     }
 
     public void typeDigit(Button button) {
+        if (isCalculated) {
+            clearAll();
+        }
         if (digitCounter < 16) {
             numberStringBuilder.append(button.getText());
             digitCounter++;
@@ -104,13 +118,29 @@ public class MainActivity extends AppCompatActivity {
         showNumber();
     }
 
+    public void numberToStringBuilder() {
+        numberStringBuilder.setLength(0);
+        numberStringBuilder = new StringBuilder(Double.toString(currentNumber));
+    }
+
     public void showNumber() {
         currentNumber = Double.parseDouble(numberStringBuilder.toString());
-        if (isPointClicked && numberStringBuilder.charAt(numberStringBuilder.length() - 1) == '0') {
+        if (!isCalculated && isPointClicked && numberStringBuilder.charAt(numberStringBuilder.length() - 1) == '0') {
             inputTextView.setText(numberStringBuilder.toString().replace(".", ","));
         } else {
             inputTextView.setText(decimalFormat.format(currentNumber));
         }
+    }
+
+    public void updateLastOperation() {
+        if (isCalculated) {
+            lastOperation = decimalFormat.format(firstNumber) + " " + operation + " " + decimalFormat.format(secondNumber);
+        } else if (lastOperation.length() == 0) {
+            lastOperation = decimalFormat.format(currentNumber) + " " + operation + " ";
+        } else {
+            lastOperation = lastOperation + decimalFormat.format(currentNumber);
+        }
+        lastOperationTextView.setText(lastOperation);
     }
 
     public void typePoint() {
@@ -127,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
     public void clearAll() {
         lastOperation = "";
         lastOperationTextView.setText(lastOperation);
+        isCalculated = false;
         clear();
     }
 
@@ -151,5 +182,63 @@ public class MainActivity extends AppCompatActivity {
                 showNumber();
             }
         }
+    }
+
+    public void getBasicOperation(Button button) {
+        operation = button.getText().charAt(0);
+        if (isCalculated) {
+            lastOperation = "";
+            isCalculated = false;
+        }
+        updateLastOperation();
+        firstNumber = currentNumber;
+        clear();
+    }
+
+    public void calcPercent() {
+        if (lastOperationTextView.getText() == "" || operation == '*' || operation == '/') {
+            currentNumber /= 100;
+        } else {
+            currentNumber = firstNumber * currentNumber / 100;
+        }
+        numberToStringBuilder();
+        showNumber();
+        updateLastOperation();
+    }
+
+    public void negateNumber() {
+        currentNumber *= -1;
+        numberToStringBuilder();
+        showNumber();
+    }
+
+    public void calculate() {
+        if (isCalculated) {
+            firstNumber = currentNumber;
+        }
+        updateLastOperation();
+        if (!isCalculated) {
+            secondNumber = currentNumber;
+        }
+        switch (operation) {
+            case '+':
+                currentNumber = firstNumber + secondNumber;
+                break;
+            case '-':
+                currentNumber = firstNumber - secondNumber;
+                break;
+            case '*':
+                currentNumber = firstNumber * secondNumber;
+                break;
+            case '/':
+                currentNumber = firstNumber / secondNumber;
+                break;
+        }
+        isCalculated = true;
+        numberToStringBuilder();
+        if (currentNumber % 1 == 0) {
+            numberStringBuilder.setLength(numberStringBuilder.length() - 2);
+        }
+        showNumber();
     }
 }
