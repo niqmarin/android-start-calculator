@@ -49,7 +49,7 @@
             android:layout_height="80dp"/>
 
         <Button
-            android:id="@+id/reverse_button"
+            android:id="@+id/negate_button"
             android:text="+/-"
             android:textSize="30sp"
             android:textColor="@color/grey_text"

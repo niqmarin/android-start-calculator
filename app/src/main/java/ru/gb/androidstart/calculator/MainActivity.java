@@ -25,16 +25,19 @@ public class MainActivity extends AppCompatActivity {
     private Button minusButton;
     private Button multiplyButton;
     private Button divideButton;
-    private Button reverseButton;
+    private Button negateButton;
     private Button percentButton;
     private Button clearButton;
     private Button backspaceButton;
+    private Button equalsButton;
     private TextView inputTextView;
     private TextView lastOperationTextView;
     private int digitCounter = 0;
     private StringBuilder numberStringBuilder;
-    private double number;
-    private boolean isFloatingPoint;
+    private double currentNumber;
+    private boolean isPointClicked;
+    private String lastOperation = "";
+    private DecimalFormat decimalFormat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initializeViews();
         doButtonsClick();
-
     }
 
     public void initializeViews() {
@@ -63,38 +65,38 @@ public class MainActivity extends AppCompatActivity {
         minusButton = findViewById(R.id.minus_button);
         multiplyButton = findViewById(R.id.multiply_button);
         divideButton = findViewById(R.id.divide_button);
-        reverseButton = findViewById(R.id.reverse_button);
+        negateButton = findViewById(R.id.negate_button);
         percentButton = findViewById(R.id.percent_button);
         backspaceButton = findViewById(R.id.backspace_button);
         clearButton = findViewById(R.id.clear_all_button);
+        equalsButton = findViewById(R.id.equals_button);
         numberStringBuilder = new StringBuilder();
+        decimalFormat = new DecimalFormat("###,###.###############",
+                DecimalFormatSymbols.getInstance(new Locale("ru", "RU")));
     }
 
     public void doButtonsClick() {
         zeroButton.setOnClickListener(v -> {
-            if (inputTextView.getText() == "" || number != 0 || isFloatingPoint) {
-                typeNumber(zeroButton);
+            if (inputTextView.getText() == "" || currentNumber != 0 || isPointClicked) {
+                typeDigit(zeroButton);
             }
         });
-        oneButton.setOnClickListener(v -> typeNumber(oneButton));
-        twoButton.setOnClickListener(v -> typeNumber(twoButton));
-        threeButton.setOnClickListener(v -> typeNumber(threeButton));
-        fourButton.setOnClickListener(v -> typeNumber(fourButton));
-        fiveButton.setOnClickListener(v -> typeNumber(fiveButton));
-        sixButton.setOnClickListener(v -> typeNumber(sixButton));
-        sevenButton.setOnClickListener(v -> typeNumber(sevenButton));
-        eightButton.setOnClickListener(v -> typeNumber(eightButton));
-        nineButton.setOnClickListener(v -> typeNumber(nineButton));
+        oneButton.setOnClickListener(v -> typeDigit(oneButton));
+        twoButton.setOnClickListener(v -> typeDigit(twoButton));
+        threeButton.setOnClickListener(v -> typeDigit(threeButton));
+        fourButton.setOnClickListener(v -> typeDigit(fourButton));
+        fiveButton.setOnClickListener(v -> typeDigit(fiveButton));
+        sixButton.setOnClickListener(v -> typeDigit(sixButton));
+        sevenButton.setOnClickListener(v -> typeDigit(sevenButton));
+        eightButton.setOnClickListener(v -> typeDigit(eightButton));
+        nineButton.setOnClickListener(v -> typeDigit(nineButton));
         pointButton.setOnClickListener(v -> typePoint());
-        clearButton.setOnClickListener(v -> {
-            lastOperationTextView.setText("");
-            clear();
-        });
+        clearButton.setOnClickListener(v -> clearAll());
         backspaceButton.setOnClickListener(v -> deleteLastChar());
         backspaceButton.setOnLongClickListener(v -> clear());
     }
 
-    public void typeNumber(Button button) {
+    public void typeDigit(Button button) {
         if (digitCounter < 16) {
             numberStringBuilder.append(button.getText());
             digitCounter++;
@@ -103,13 +105,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showNumber() {
-        number = Double.parseDouble(numberStringBuilder.toString());
-        if (number == 0 && isFloatingPoint) {
+        currentNumber = Double.parseDouble(numberStringBuilder.toString());
+        if (isPointClicked && numberStringBuilder.charAt(numberStringBuilder.length() - 1) == '0') {
             inputTextView.setText(numberStringBuilder.toString().replace(".", ","));
         } else {
-            DecimalFormat df = new DecimalFormat("###,###.###############",
-                    DecimalFormatSymbols.getInstance(new Locale("ru", "RU")));
-            inputTextView.setText(df.format(number));
+            inputTextView.setText(decimalFormat.format(currentNumber));
         }
     }
 
@@ -117,29 +117,39 @@ public class MainActivity extends AppCompatActivity {
         if (numberStringBuilder.length() == 0) {
             zeroButton.performClick();
         }
-        if (!isFloatingPoint) {
+        if (!isPointClicked) {
             numberStringBuilder.append(".");
-            isFloatingPoint = true;
+            isPointClicked = true;
             inputTextView.setText(inputTextView.getText() + ",");
         }
     }
 
+    public void clearAll() {
+        lastOperation = "";
+        lastOperationTextView.setText(lastOperation);
+        clear();
+    }
+
     public boolean clear() {
         inputTextView.setText("");
-        number = 0;
+        currentNumber = 0;
         numberStringBuilder.setLength(0);
-        isFloatingPoint = false;
+        isPointClicked = false;
         digitCounter = 0;
         return true;
     }
 
     public void deleteLastChar() {
         if (numberStringBuilder.length() > 0) {
-            if (numberStringBuilder.charAt(numberStringBuilder.length() - 1) == '.') {
-                isFloatingPoint = false;
+            if (numberStringBuilder.length() == 1) {
+                clear();
+            } else {
+                if (numberStringBuilder.charAt(numberStringBuilder.length() - 1) == '.') {
+                    isPointClicked = false;
+                }
+                numberStringBuilder.setLength(numberStringBuilder.length() - 1);
+                showNumber();
             }
-            numberStringBuilder.setLength(numberStringBuilder.length() - 1);
-            showNumber();
         }
     }
 }
