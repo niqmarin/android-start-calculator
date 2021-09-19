@@ -1,7 +1,9 @@
 package ru.gb.androidstart.calculator;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import java.text.DecimalFormat;
@@ -40,14 +42,39 @@ public class MainActivity extends AppCompatActivity {
     private boolean isPointClicked;
     private boolean isCalculated;
     private char operation;
-    private String lastOperation = "";
+    private String lastOperationStr = "";
+    private String inputStr = "";
     private DecimalFormat decimalFormat;
+    private static final String KEY_LAST_OPERATION = "LAST_OPERATION";
+    private static final String KEY_INPUT = "INPUT";
+    private static final String KEY_DIGIT_COUNTER = "DIGIT_COUNTER";
+    private static final String KEY_CURRENT_NUMBER = "CURRENT_NUMBER";
+    private static final String KEY_FIRST_NUMBER = "FIRST_NUMBER";
+    private static final String KEY_SECOND_NUMBER = "SECOND_NUMBER";
+    private static final String KEY_OPERATION = "OPERATION";
+    private static final String KEY_IS_POINT_CLICKED = "IS_POINT_CLICKED";
+    private static final String KEY_IS_CALCULATED = "IS_CALCULATED";
+    private static final String KEY_NUMBER_SB = "NUMBER_SB";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initializeViews();
+        if (savedInstanceState != null) {
+            lastOperationStr = savedInstanceState.getString(KEY_LAST_OPERATION);
+            lastOperationTextView.setText(lastOperationStr);
+            inputStr = savedInstanceState.getString(KEY_INPUT);
+            inputTextView.setText(inputStr);
+            digitCounter = savedInstanceState.getInt(KEY_DIGIT_COUNTER);
+            numberStringBuilder = new StringBuilder(savedInstanceState.getString(KEY_NUMBER_SB));
+            currentNumber = savedInstanceState.getDouble(KEY_CURRENT_NUMBER);
+            firstNumber = savedInstanceState.getDouble(KEY_FIRST_NUMBER);
+            secondNumber = savedInstanceState.getDouble(KEY_SECOND_NUMBER);
+            operation = savedInstanceState.getChar(KEY_OPERATION);
+            isPointClicked = savedInstanceState.getBoolean(KEY_IS_POINT_CLICKED);
+            isCalculated = savedInstanceState.getBoolean(KEY_IS_CALCULATED);
+        }
         doButtonsClick();
     }
 
@@ -107,6 +134,21 @@ public class MainActivity extends AppCompatActivity {
         equalsButton.setOnClickListener(v -> calculate());
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(KEY_LAST_OPERATION, lastOperationStr);
+        outState.putString(KEY_INPUT, inputStr);
+        outState.putInt(KEY_DIGIT_COUNTER, digitCounter);
+        outState.putString(KEY_NUMBER_SB, numberStringBuilder.toString());
+        outState.putDouble(KEY_CURRENT_NUMBER, currentNumber);
+        outState.putDouble(KEY_FIRST_NUMBER, firstNumber);
+        outState.putDouble(KEY_SECOND_NUMBER, secondNumber);
+        outState.putChar(KEY_OPERATION, operation);
+        outState.putBoolean(KEY_IS_POINT_CLICKED, isPointClicked);
+        outState.putBoolean(KEY_IS_CALCULATED, isCalculated);
+    }
+
     public void typeDigit(Button button) {
         if (isCalculated) {
             clearAll();
@@ -126,21 +168,22 @@ public class MainActivity extends AppCompatActivity {
     public void showNumber() {
         currentNumber = Double.parseDouble(numberStringBuilder.toString());
         if (!isCalculated && isPointClicked && numberStringBuilder.charAt(numberStringBuilder.length() - 1) == '0') {
-            inputTextView.setText(numberStringBuilder.toString().replace(".", ","));
+            inputStr = inputTextView.getText() + "0";
         } else {
-            inputTextView.setText(decimalFormat.format(currentNumber));
+            inputStr = decimalFormat.format(currentNumber);
         }
+        inputTextView.setText(inputStr);
     }
 
     public void updateLastOperation() {
         if (isCalculated) {
-            lastOperation = decimalFormat.format(firstNumber) + " " + operation + " " + decimalFormat.format(secondNumber);
-        } else if (lastOperation.length() == 0) {
-            lastOperation = decimalFormat.format(currentNumber) + " " + operation + " ";
+            lastOperationStr = decimalFormat.format(firstNumber) + " " + operation + " " + decimalFormat.format(secondNumber);
+        } else if (lastOperationStr.length() == 0) {
+            lastOperationStr = decimalFormat.format(currentNumber) + " " + operation + " ";
         } else {
-            lastOperation = lastOperation + decimalFormat.format(currentNumber);
+            lastOperationStr = lastOperationStr + decimalFormat.format(currentNumber);
         }
-        lastOperationTextView.setText(lastOperation);
+        lastOperationTextView.setText(lastOperationStr);
     }
 
     public void typePoint() {
@@ -150,19 +193,21 @@ public class MainActivity extends AppCompatActivity {
         if (!isPointClicked) {
             numberStringBuilder.append(".");
             isPointClicked = true;
-            inputTextView.setText(inputTextView.getText() + ",");
+            inputStr = inputTextView.getText() + ",";
+            inputTextView.setText(inputStr);
         }
     }
 
     public void clearAll() {
-        lastOperation = "";
-        lastOperationTextView.setText(lastOperation);
+        lastOperationStr = "";
+        lastOperationTextView.setText(lastOperationStr);
         isCalculated = false;
         clear();
     }
 
     public boolean clear() {
-        inputTextView.setText("");
+        inputStr = "";
+        inputTextView.setText(inputStr);
         currentNumber = 0;
         numberStringBuilder.setLength(0);
         isPointClicked = false;
@@ -187,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
     public void getBasicOperation(Button button) {
         operation = button.getText().charAt(0);
         if (isCalculated) {
-            lastOperation = "";
+            lastOperationStr = "";
             isCalculated = false;
         }
         updateLastOperation();
@@ -215,11 +260,10 @@ public class MainActivity extends AppCompatActivity {
     public void calculate() {
         if (isCalculated) {
             firstNumber = currentNumber;
-        }
-        updateLastOperation();
-        if (!isCalculated) {
+        } else {
             secondNumber = currentNumber;
         }
+        updateLastOperation();
         switch (operation) {
             case '+':
                 currentNumber = firstNumber + secondNumber;
