@@ -179,9 +179,9 @@ public class MainActivity extends AppCompatActivity {
         if (isCalculated) {
             lastOperationStr = decimalFormat.format(firstNumber) + " " + operation + " " + decimalFormat.format(secondNumber);
         } else if (lastOperationStr.length() == 0) {
-            lastOperationStr = decimalFormat.format(currentNumber) + " " + operation + " ";
+            lastOperationStr = decimalFormat.format(firstNumber) + " " + operation + " ";
         } else {
-            lastOperationStr = lastOperationStr + decimalFormat.format(currentNumber);
+            lastOperationStr = lastOperationStr + decimalFormat.format(secondNumber);
         }
         lastOperationTextView.setText(lastOperationStr);
     }
@@ -230,13 +230,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getBasicOperation(Button button) {
+        //if lastOperation field has operation and input field has a number second operationButton click
+        //leads to calculating first operation and writing result to lastOperation with recent operation
+        if (lastOperationStr.length()> 0 &&
+                "+-*/".contains(String.valueOf(lastOperationStr.charAt(lastOperationStr.length() - 2))) &&
+                inputStr.length() > 0) {
+            equalsButton.performClick();
+            firstNumber = currentNumber;
+        }
         operation = button.getText().charAt(0);
         if (isCalculated) {
             lastOperationStr = "";
             isCalculated = false;
         }
+        //if lastOperation field has operation and input field is empty second operationButton click leads to operation change
+        if (lastOperationStr.length()> 0 &&
+                "+-*/".contains(String.valueOf(lastOperationStr.charAt(lastOperationStr.length() - 2))) &&
+                inputStr.length() == 0){
+            lastOperationStr = "";
+            currentNumber = firstNumber;
+        } else {
+            firstNumber = currentNumber;
+        }
         updateLastOperation();
-        firstNumber = currentNumber;
         clear();
     }
 
