@@ -15,66 +15,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:columnCount="4"
+        android:columnCount="5"
         android:orientation="horizontal"
         android:useDefaultMargins="true">
 
         <TextView
             android:id="@+id/last_operation_text_view"
-            android:layout_width="380dp"
+            android:layout_width="470dp"
             android:gravity="end"
-            android:layout_columnSpan="4"
+            android:layout_columnSpan="5"
             tools:text="25 + 48"
             android:textSize="20sp"
             android:textColor="@color/grey_text"/>
 
         <TextView
             android:id="@+id/input_text_view"
-            android:layout_width="380dp"
+            android:layout_width="470dp"
             android:gravity="end"
-            android:layout_columnSpan="4"
+            android:layout_columnSpan="5"
             tools:text="123456"
             android:textSize="32sp"
             android:textColor="@color/grey_text"/>
-
-        <Button
-            android:id="@+id/clear_all_button"
-            android:text="C"
-            android:textSize="30sp"
-            android:backgroundTint="@color/red" />
-
-        <Space
-            android:layout_column="1"
-            android:layout_columnSpan="3"
-            android:layout_height="80dp"/>
-
-        <Button
-            android:id="@+id/negate_button"
-            android:text="+/-"
-            android:textSize="30sp"
-            android:textColor="@color/grey_text"
-            android:backgroundTint="@color/grey_operations" />
-
-        <Button
-            android:id="@+id/multiply_button"
-            android:text="*"
-            android:textSize="30sp"
-            android:textColor="@color/grey_text"
-            android:backgroundTint="@color/grey_operations"/>
-
-        <Button
-            android:id="@+id/divide_button"
-            android:text="/"
-            android:textSize="30sp"
-            android:textColor="@color/grey_text"
-            android:backgroundTint="@color/grey_operations"/>
-
-        <Button
-            android:id="@+id/backspace_button"
-            android:drawableLeft="@drawable/ic_baseline_backspace_24"
-            android:layout_gravity="fill_vertical"
-            android:paddingLeft="27dp"
-            android:backgroundTint="@color/grey_operations"/>
 
         <Button
             android:id="@+id/seven_button"
@@ -98,10 +59,16 @@
             android:backgroundTint="@color/grey_numbers"/>
 
         <Button
-            android:id="@+id/minus_button"
-            android:text="-"
+            android:id="@+id/clear_all_button"
+            android:text="C"
             android:textSize="30sp"
-            android:textColor="@color/grey_text"
+            android:backgroundTint="@color/red" />
+
+        <Button
+            android:id="@+id/backspace_button"
+            android:drawableLeft="@drawable/ic_baseline_backspace_24"
+            android:layout_gravity="fill_vertical"
+            android:paddingLeft="27dp"
             android:backgroundTint="@color/grey_operations"/>
 
         <Button
@@ -124,6 +91,13 @@
             android:textSize="30sp"
             android:textColor="@color/grey_text"
             android:backgroundTint="@color/grey_numbers"/>
+
+        <Button
+            android:id="@+id/multiply_button"
+            android:text="*"
+            android:textSize="30sp"
+            android:textColor="@color/grey_text"
+            android:backgroundTint="@color/grey_operations"/>
 
         <Button
             android:id="@+id/plus_button"
@@ -154,10 +128,15 @@
             android:backgroundTint="@color/grey_numbers"/>
 
         <Button
-            android:id="@+id/equals_button"
-            android:layout_gravity="fill_vertical"
-            android:layout_rowSpan="2"
-            android:text="="
+            android:id="@+id/divide_button"
+            android:text="/"
+            android:textSize="30sp"
+            android:textColor="@color/grey_text"
+            android:backgroundTint="@color/grey_operations"/>
+
+        <Button
+            android:id="@+id/minus_button"
+            android:text="-"
             android:textSize="30sp"
             android:textColor="@color/grey_text"
             android:backgroundTint="@color/grey_operations"/>
@@ -179,6 +158,20 @@
         <Button
             android:id="@+id/point_button"
             android:text=","
+            android:textSize="30sp"
+            android:textColor="@color/grey_text"
+            android:backgroundTint="@color/grey_operations"/>
+
+        <Button
+            android:id="@+id/negate_button"
+            android:text="+/-"
+            android:textSize="30sp"
+            android:textColor="@color/grey_text"
+            android:backgroundTint="@color/grey_operations" />
+
+        <Button
+            android:id="@+id/equals_button"
+            android:text="="
             android:textSize="30sp"
             android:textColor="@color/grey_text"
             android:backgroundTint="@color/grey_operations"/>
