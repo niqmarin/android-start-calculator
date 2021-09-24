@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CalcButtonStyle">
+        <item name="android:textSize">@dimen/calc_button_text_size</item>
+        <item name="android:textColor">@color/grey_text</item>
+    </style>
+
+    <style name="CalcButtonStyle.Digit">
+        <item name="android:backgroundTint">@color/grey_digit_button</item>
+    </style>
+
+    <style name="CalcButtonStyle.Operation">
+        <item name="android:backgroundTint">@color/grey_operation_button</item>
+    </style>
+</resources>
