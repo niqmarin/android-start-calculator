@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="text_view_width">380dp</dimen>
+    <dimen name="space_height">80dp</dimen>
+    <dimen name="calc_button_text_size">30sp</dimen>
+    <dimen name="text_view_big_text_size">32sp</dimen>
+    <dimen name="text_view_small_text_size">20sp</dimen>
+    <dimen name="backspace_padding_left">27dp</dimen>
+    <dimen name="text_view_land_width">470dp</dimen>
+</resources>

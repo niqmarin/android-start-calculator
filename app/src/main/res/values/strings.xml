@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">Calculator</string>
+    <string name="example_text_last_operation">2345 + 6789,003</string>
+    <string name="example_text_input">9 134,003</string>
+    <string name="symbol_clear">C</string>
+    <string name="symbol_negate">+/-</string>
+    <string name="symbol_multiply">*</string>
+    <string name="symbol_divide">/</string>
+    <string name="digit_7">7</string>
+    <string name="digit_8">8</string>
+    <string name="digit_9">9</string>
+    <string name="symbol_minus">-</string>
+    <string name="digit_4">4</string>
+    <string name="digit_5">5</string>
+    <string name="digit_6">6</string>
+    <string name="symbol_plus">+</string>
+    <string name="digit_1">1</string>
+    <string name="digit_2">2</string>
+    <string name="digit_3">3</string>
+    <string name="symbol_equals">=</string>
+    <string name="symbol_percent">%</string>
+    <string name="digit_0">0</string>
+    <string name="symbol_point">,</string>
 </resources>
