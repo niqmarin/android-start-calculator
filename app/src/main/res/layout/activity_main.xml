@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
     <ImageView
@@ -21,27 +22,22 @@
 
         <TextView
             android:id="@+id/last_operation_text_view"
-            android:layout_width="@dimen/text_view_width"
             android:gravity="end"
             android:layout_columnSpan="4"
             tools:text="@string/example_text_last_operation"
-            android:textSize="@dimen/text_view_small_text_size"
-            android:textColor="@color/grey_text"/>
+            style="@style/TextViewStyle.Small"/>
 
         <TextView
             android:id="@+id/input_text_view"
-            android:layout_width="@dimen/text_view_width"
             android:gravity="end"
             android:layout_columnSpan="4"
             tools:text="@string/example_text_input"
-            android:textSize="@dimen/text_view_big_text_size"
-            android:textColor="@color/grey_text"/>
+            style="@style/TextViewStyle"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/clear_all_button"
             android:text="@string/symbol_clear"
-            android:textSize="@dimen/calc_button_text_size"
-            android:backgroundTint="@color/red" />
+            style="@style/CalcButtonStyle.Clear"/>
 
         <Space
             android:layout_column="1"
@@ -65,7 +61,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/backspace_button"
-            android:drawableLeft="@drawable/ic_baseline_backspace_24"
+            app:icon="@drawable/ic_baseline_backspace_24"
             android:layout_gravity="fill_vertical"
             android:paddingLeft="@dimen/backspace_padding_left"
             style="@style/CalcButtonStyle.Operation"/>
@@ -73,17 +69,17 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/seven_button"
             android:text="@string/digit_7"
-            style="@style/CalcButtonStyle.Digit"/>
+            style="@style/CalcButtonStyle"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/eight_button"
             android:text="@string/digit_8"
-            style="@style/CalcButtonStyle.Digit"/>
+            style="@style/CalcButtonStyle"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/nine_button"
             android:text="@string/digit_9"
-            style="@style/CalcButtonStyle.Digit"/>
+            style="@style/CalcButtonStyle"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/minus_button"
@@ -93,17 +89,17 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/four_button"
             android:text="@string/digit_4"
-            style="@style/CalcButtonStyle.Digit"/>
+            style="@style/CalcButtonStyle"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/five_button"
             android:text="@string/digit_5"
-            style="@style/CalcButtonStyle.Digit"/>
+            style="@style/CalcButtonStyle"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/six_button"
             android:text="@string/digit_6"
-            style="@style/CalcButtonStyle.Digit"/>
+            style="@style/CalcButtonStyle"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/plus_button"
@@ -113,17 +109,17 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/one_button"
             android:text="@string/digit_1"
-            style="@style/CalcButtonStyle.Digit"/>
+            style="@style/CalcButtonStyle"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/two_button"
             android:text="@string/digit_2"
-            style="@style/CalcButtonStyle.Digit"/>
+            style="@style/CalcButtonStyle"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/three_button"
             android:text="@string/digit_3"
-            style="@style/CalcButtonStyle.Digit"/>
+            style="@style/CalcButtonStyle"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/equals_button"
@@ -140,7 +136,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/zero_button"
             android:text="@string/digit_0"
-            style="@style/CalcButtonStyle.Digit"/>
+            style="@style/CalcButtonStyle"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/point_button"
