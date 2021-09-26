@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView lastOperationTextView;
     private int digitCounter = 0;
     private StringBuilder numberStringBuilder;
-    private double currentNumber;
+    private BigDecimal currentNumber;
     private boolean isPointClicked;
     private boolean isCalculated;
     private String lastOperationStr = "";
@@ -126,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         outState.putString(KEY_INPUT, inputStr);
         outState.putInt(KEY_DIGIT_COUNTER, digitCounter);
         outState.putString(KEY_NUMBER_SB, numberStringBuilder.toString());
-        outState.putDouble(KEY_CURRENT_NUMBER, currentNumber);
+        outState.putSerializable(KEY_CURRENT_NUMBER, currentNumber);
         outState.putBoolean(KEY_IS_POINT_CLICKED, isPointClicked);
         outState.putBoolean(KEY_IS_CALCULATED, isCalculated);
         outState.putParcelable(KEY_CALCULATOR, calculator);
@@ -139,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
         inputTextView.setText(inputStr);
         digitCounter = savedInstanceState.getInt(KEY_DIGIT_COUNTER);
         numberStringBuilder = new StringBuilder(savedInstanceState.getString(KEY_NUMBER_SB));
-        currentNumber = savedInstanceState.getDouble(KEY_CURRENT_NUMBER);
+        currentNumber = (BigDecimal) savedInstanceState.getSerializable(KEY_CURRENT_NUMBER);
         isPointClicked = savedInstanceState.getBoolean(KEY_IS_POINT_CLICKED);
         isCalculated = savedInstanceState.getBoolean(KEY_IS_CALCULATED);
         calculator = savedInstanceState.getParcelable(KEY_CALCULATOR);
@@ -163,11 +165,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void numberToStringBuilder() {
         numberStringBuilder.setLength(0);
-        numberStringBuilder.append(Double.toString(currentNumber));
+        numberStringBuilder.append(currentNumber);
     }
 
     public void showNumber() {
-        currentNumber = Double.parseDouble(numberStringBuilder.toString());
+        currentNumber = new BigDecimal(numberStringBuilder.toString());
         if (!isCalculated && isPointClicked && numberStringBuilder.charAt(numberStringBuilder.length() - 1) == '0') {
             inputStr = inputTextView.getText() + "0";
         } else {
@@ -213,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean clear() {
         inputStr = "";
         inputTextView.setText(inputStr);
-        currentNumber = 0;
+        currentNumber = BigDecimal.valueOf(0);
         numberStringBuilder.setLength(0);
         isPointClicked = false;
         digitCounter = 0;
@@ -276,19 +278,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void calcPercent() {
         if (lastOperationStr.equals("")) {
-            currentNumber = calculator.noMemorizeCalculate(currentNumber, 100.0, Calculator.Operation.DIVIDE);
+            currentNumber = calculator.noMemorizeCalculate(currentNumber, BigDecimal.valueOf(100), Calculator.Operation.DIVIDE);
             calculator.setFirstNumber(currentNumber);
             numberToStringBuilder();
             showNumber();
         } else if (calculator.getOperation().equals(Calculator.Operation.MULTIPLY)
                 || calculator.getOperation().equals(Calculator.Operation.DIVIDE)) {
-            currentNumber = calculator.noMemorizeCalculate(currentNumber, 100.0, Calculator.Operation.DIVIDE);
+            currentNumber = calculator.noMemorizeCalculate(currentNumber, BigDecimal.valueOf(100), Calculator.Operation.DIVIDE);
             calculator.setSecondNumber(currentNumber);
             numberToStringBuilder();
             showNumber();
             updateLastOperation();
         } else {
-            currentNumber = calculator.noMemorizeCalculate(currentNumber, 100.0, Calculator.Operation.DIVIDE);
+            currentNumber = calculator.noMemorizeCalculate(currentNumber, BigDecimal.valueOf(100), Calculator.Operation.DIVIDE);
             currentNumber = calculator.noMemorizeCalculate(calculator.getFirstNumber(), currentNumber, Calculator.Operation.MULTIPLY);
             calculator.setSecondNumber(currentNumber);
             numberToStringBuilder();
@@ -298,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void negateNumber() {
-        currentNumber = calculator.noMemorizeCalculate(currentNumber, -1.0, Calculator.Operation.MULTIPLY);
+        currentNumber = calculator.noMemorizeCalculate(currentNumber, BigDecimal.valueOf(-1), Calculator.Operation.MULTIPLY);
         numberToStringBuilder();
         showNumber();
     }
@@ -313,9 +315,9 @@ public class MainActivity extends AppCompatActivity {
         currentNumber = calculator.calculate();
         isCalculated = true;
         numberToStringBuilder();
-        if (currentNumber % 1 == 0) {
-            numberStringBuilder.setLength(numberStringBuilder.length() - 2);
-        }
+//        if (currentNumber % 1 == 0) {
+//            numberStringBuilder.setLength(numberStringBuilder.length() - 2);
+//        }
         showNumber();
     }
 }
