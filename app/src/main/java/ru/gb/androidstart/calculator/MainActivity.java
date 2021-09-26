@@ -189,6 +189,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void typePoint() {
+        if (numberStringBuilder.toString().contains(".")) {
+            isPointClicked = true;
+        }
         if (numberStringBuilder.length() == 0) {
             numberStringBuilder.append("0");
         }
