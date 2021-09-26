@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/background"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/settings_activity_title"
+            android:textSize="@dimen/text_view_big_text_size"/>
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/radio_group_margin">
+
+            <RadioButton
+                android:id="@+id/day_theme_radio_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/day_theme"
+                style="@style/RadioButtonStyle"/>
+
+            <RadioButton
+                android:id="@+id/night_theme_radio_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/night_theme"
+                style="@style/RadioButtonStyle"/>
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+</FrameLayout>

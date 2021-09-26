@@ -2,6 +2,8 @@ package ru.gb.androidstart.calculator;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private Button clearButton;
     private Button backspaceButton;
     private Button equalsButton;
+    private Button settingsButton;
     private TextView inputTextView;
     private TextView lastOperationTextView;
     private int digitCounter = 0;
@@ -85,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         backspaceButton = findViewById(R.id.backspace_button);
         clearButton = findViewById(R.id.clear_all_button);
         equalsButton = findViewById(R.id.equals_button);
+        settingsButton = findViewById(R.id.settings_button);
         numberStringBuilder = new StringBuilder();
         decimalFormat = new DecimalFormat("###,###.###############",
                 DecimalFormatSymbols.getInstance(new Locale("ru", "RU")));
@@ -112,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
         percentButton.setOnClickListener(v -> calcPercent());
         negateButton.setOnClickListener(v -> negateNumber());
         equalsButton.setOnClickListener(v -> calculate());
+        settingsButton.setOnClickListener(v -> openSettings());
     }
 
     @Override
@@ -138,6 +143,11 @@ public class MainActivity extends AppCompatActivity {
         isPointClicked = savedInstanceState.getBoolean(KEY_IS_POINT_CLICKED);
         isCalculated = savedInstanceState.getBoolean(KEY_IS_CALCULATED);
         calculator = savedInstanceState.getParcelable(KEY_CALCULATOR);
+    }
+
+    public void openSettings() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     public void typeDigit(Button button) {
