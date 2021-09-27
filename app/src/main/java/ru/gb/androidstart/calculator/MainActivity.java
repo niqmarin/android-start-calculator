@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
     private int digitCounter = 0;
     private StringBuilder numberStringBuilder;
     private BigDecimal currentNumber;
-    private boolean isPointClicked;
     private boolean isCalculated;
     private String lastOperationStr = "";
     private String inputStr = "";
@@ -49,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_INPUT = "INPUT";
     private static final String KEY_DIGIT_COUNTER = "DIGIT_COUNTER";
     private static final String KEY_CURRENT_NUMBER = "CURRENT_NUMBER";
-    private static final String KEY_IS_POINT_CLICKED = "IS_POINT_CLICKED";
     private static final String KEY_IS_CALCULATED = "IS_CALCULATED";
     private static final String KEY_NUMBER_SB = "NUMBER_SB";
     private static final String KEY_CALCULATOR = "KEY_CALCULATOR";
@@ -127,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
         outState.putInt(KEY_DIGIT_COUNTER, digitCounter);
         outState.putString(KEY_NUMBER_SB, numberStringBuilder.toString());
         outState.putSerializable(KEY_CURRENT_NUMBER, currentNumber);
-        outState.putBoolean(KEY_IS_POINT_CLICKED, isPointClicked);
         outState.putBoolean(KEY_IS_CALCULATED, isCalculated);
         outState.putParcelable(KEY_CALCULATOR, calculator);
     }
@@ -140,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
         digitCounter = savedInstanceState.getInt(KEY_DIGIT_COUNTER);
         numberStringBuilder = new StringBuilder(savedInstanceState.getString(KEY_NUMBER_SB));
         currentNumber = (BigDecimal) savedInstanceState.getSerializable(KEY_CURRENT_NUMBER);
-        isPointClicked = savedInstanceState.getBoolean(KEY_IS_POINT_CLICKED);
         isCalculated = savedInstanceState.getBoolean(KEY_IS_CALCULATED);
         calculator = savedInstanceState.getParcelable(KEY_CALCULATOR);
     }
@@ -168,7 +164,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void showNumber() {
         currentNumber = new BigDecimal(numberStringBuilder.toString());
-        if (!isCalculated && isPointClicked && numberStringBuilder.charAt(numberStringBuilder.length() - 1) == '0') {
+        if (!isCalculated && inputStr.contains(",") &&
+                numberStringBuilder.charAt(numberStringBuilder.length() - 1) == '0') {
             inputStr = inputTextView.getText() + "0";
         } else {
             inputStr = decimalFormat.format(currentNumber);
@@ -189,16 +186,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void typePoint() {
-        if (numberStringBuilder.toString().contains(".")) {
-            isPointClicked = true;
-        }
-        if (numberStringBuilder.length() == 0) {
-            numberStringBuilder.append("0");
-        }
-        if (!isPointClicked) {
+        if (!inputStr.contains(",")) {
+            if (inputStr.length() == 0) {
+                numberStringBuilder.append("0");
+                inputStr += "0";
+            }
             numberStringBuilder.append(".");
-            isPointClicked = true;
-            inputStr = inputStr + ",";
+            inputStr += ",";
             inputTextView.setText(inputStr);
         }
     }
@@ -215,7 +209,6 @@ public class MainActivity extends AppCompatActivity {
         inputTextView.setText(inputStr);
         currentNumber = BigDecimal.valueOf(0);
         numberStringBuilder.setLength(0);
-        isPointClicked = false;
         digitCounter = 0;
         return true;
     }
@@ -225,9 +218,6 @@ public class MainActivity extends AppCompatActivity {
             if (numberStringBuilder.length() == 1) {
                 clear();
             } else {
-                if (numberStringBuilder.charAt(numberStringBuilder.length() - 1) == '.') {
-                    isPointClicked = false;
-                }
                 numberStringBuilder.setLength(numberStringBuilder.length() - 1);
                 showNumber();
             }
