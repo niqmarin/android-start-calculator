@@ -84,7 +84,11 @@ public class Calculator implements Parcelable {
                 resultNumber = firstNumber.multiply(secondNumber);
                 break;
             case DIVIDE:
-                resultNumber = firstNumber.divide(secondNumber);
+                if (secondNumber.compareTo(BigDecimal.ZERO) == 0) {
+                    resultNumber = null;
+                } else {
+                    resultNumber = firstNumber.divide(secondNumber, 15, BigDecimal.ROUND_HALF_UP);
+                }
                 break;
         }
         return resultNumber;
@@ -102,7 +106,11 @@ public class Calculator implements Parcelable {
                 resultNumber = outerFirstNumber.multiply(outerSecondNumber);
                 break;
             case DIVIDE:
-                resultNumber = outerFirstNumber.divide(outerSecondNumber);
+                if (outerSecondNumber.compareTo(BigDecimal.ZERO) == 0) {
+                    resultNumber = null;
+                } else {
+                    resultNumber = outerFirstNumber.divide(outerSecondNumber, 15, BigDecimal.ROUND_HALF_UP);
+                }
                 break;
         }
         return resultNumber;

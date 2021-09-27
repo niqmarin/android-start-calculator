@@ -24,4 +24,5 @@
     <string name="settings_activity_title">Настройки темы:</string>
     <string name="day_theme">Дневная тема</string>
     <string name="night_theme">Ночная тема</string>
+    <string name="division_by_zero">Деление на ноль не поддерживается</string>
 </resources>

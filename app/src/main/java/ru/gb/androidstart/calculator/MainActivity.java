@@ -2,12 +2,10 @@ package ru.gb.androidstart.calculator;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
-
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -311,13 +309,14 @@ public class MainActivity extends AppCompatActivity {
         } else {
             calculator.setSecondNumber(currentNumber);
         }
-        updateLastOperation();
-        currentNumber = calculator.calculate();
-        isCalculated = true;
-        numberToStringBuilder();
-//        if (currentNumber % 1 == 0) {
-//            numberStringBuilder.setLength(numberStringBuilder.length() - 2);
-//        }
-        showNumber();
+        if (calculator.calculate() == null) {
+            inputTextView.setText(R.string.division_by_zero);
+        } else {
+            updateLastOperation();
+            currentNumber = calculator.calculate();
+            isCalculated = true;
+            numberToStringBuilder();
+            showNumber();
+        }
     }
 }
