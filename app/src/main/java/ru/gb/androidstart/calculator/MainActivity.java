@@ -2,9 +2,11 @@ package ru.gb.androidstart.calculator;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
@@ -31,12 +33,12 @@ public class MainActivity extends AppCompatActivity {
     private Button clearButton;
     private Button backspaceButton;
     private Button equalsButton;
+    private Button settingsButton;
     private TextView inputTextView;
     private TextView lastOperationTextView;
     private int digitCounter = 0;
     private StringBuilder numberStringBuilder;
-    private double currentNumber;
-    private boolean isPointClicked;
+    private BigDecimal currentNumber;
     private boolean isCalculated;
     private String lastOperationStr = "";
     private String inputStr = "";
@@ -46,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_INPUT = "INPUT";
     private static final String KEY_DIGIT_COUNTER = "DIGIT_COUNTER";
     private static final String KEY_CURRENT_NUMBER = "CURRENT_NUMBER";
-    private static final String KEY_IS_POINT_CLICKED = "IS_POINT_CLICKED";
     private static final String KEY_IS_CALCULATED = "IS_CALCULATED";
     private static final String KEY_NUMBER_SB = "NUMBER_SB";
     private static final String KEY_CALCULATOR = "KEY_CALCULATOR";
@@ -85,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         backspaceButton = findViewById(R.id.backspace_button);
         clearButton = findViewById(R.id.clear_all_button);
         equalsButton = findViewById(R.id.equals_button);
+        settingsButton = findViewById(R.id.settings_button);
         numberStringBuilder = new StringBuilder();
         decimalFormat = new DecimalFormat("###,###.###############",
                 DecimalFormatSymbols.getInstance(new Locale("ru", "RU")));
@@ -112,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
         percentButton.setOnClickListener(v -> calcPercent());
         negateButton.setOnClickListener(v -> negateNumber());
         equalsButton.setOnClickListener(v -> calculate());
+        settingsButton.setOnClickListener(v -> openSettings());
     }
 
     @Override
@@ -121,8 +124,7 @@ public class MainActivity extends AppCompatActivity {
         outState.putString(KEY_INPUT, inputStr);
         outState.putInt(KEY_DIGIT_COUNTER, digitCounter);
         outState.putString(KEY_NUMBER_SB, numberStringBuilder.toString());
-        outState.putDouble(KEY_CURRENT_NUMBER, currentNumber);
-        outState.putBoolean(KEY_IS_POINT_CLICKED, isPointClicked);
+        outState.putSerializable(KEY_CURRENT_NUMBER, currentNumber);
         outState.putBoolean(KEY_IS_CALCULATED, isCalculated);
         outState.putParcelable(KEY_CALCULATOR, calculator);
     }
@@ -134,10 +136,14 @@ public class MainActivity extends AppCompatActivity {
         inputTextView.setText(inputStr);
         digitCounter = savedInstanceState.getInt(KEY_DIGIT_COUNTER);
         numberStringBuilder = new StringBuilder(savedInstanceState.getString(KEY_NUMBER_SB));
-        currentNumber = savedInstanceState.getDouble(KEY_CURRENT_NUMBER);
-        isPointClicked = savedInstanceState.getBoolean(KEY_IS_POINT_CLICKED);
+        currentNumber = (BigDecimal) savedInstanceState.getSerializable(KEY_CURRENT_NUMBER);
         isCalculated = savedInstanceState.getBoolean(KEY_IS_CALCULATED);
         calculator = savedInstanceState.getParcelable(KEY_CALCULATOR);
+    }
+
+    public void openSettings() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     public void typeDigit(Button button) {
@@ -153,12 +159,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void numberToStringBuilder() {
         numberStringBuilder.setLength(0);
-        numberStringBuilder.append(Double.toString(currentNumber));
+        numberStringBuilder.append(currentNumber);
     }
 
     public void showNumber() {
-        currentNumber = Double.parseDouble(numberStringBuilder.toString());
-        if (!isCalculated && isPointClicked && numberStringBuilder.charAt(numberStringBuilder.length() - 1) == '0') {
+        currentNumber = new BigDecimal(numberStringBuilder.toString());
+        if (!isCalculated && inputStr.contains(",") &&
+                numberStringBuilder.charAt(numberStringBuilder.length() - 1) == '0') {
             inputStr = inputTextView.getText() + "0";
         } else {
             inputStr = decimalFormat.format(currentNumber);
@@ -179,13 +186,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void typePoint() {
-        if (numberStringBuilder.length() == 0) {
-            numberStringBuilder.append("0");
-        }
-        if (!isPointClicked) {
+        if (!inputStr.contains(",")) {
+            if (inputStr.length() == 0) {
+                numberStringBuilder.append("0");
+                inputStr += "0";
+            }
             numberStringBuilder.append(".");
-            isPointClicked = true;
-            inputStr = inputStr + ",";
+            inputStr += ",";
             inputTextView.setText(inputStr);
         }
     }
@@ -200,9 +207,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean clear() {
         inputStr = "";
         inputTextView.setText(inputStr);
-        currentNumber = 0;
+        currentNumber = BigDecimal.valueOf(0);
         numberStringBuilder.setLength(0);
-        isPointClicked = false;
         digitCounter = 0;
         return true;
     }
@@ -212,9 +218,6 @@ public class MainActivity extends AppCompatActivity {
             if (numberStringBuilder.length() == 1) {
                 clear();
             } else {
-                if (numberStringBuilder.charAt(numberStringBuilder.length() - 1) == '.') {
-                    isPointClicked = false;
-                }
                 numberStringBuilder.setLength(numberStringBuilder.length() - 1);
                 showNumber();
             }
@@ -263,19 +266,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void calcPercent() {
         if (lastOperationStr.equals("")) {
-            currentNumber = calculator.noMemorizeCalculate(currentNumber, 100.0, Calculator.Operation.DIVIDE);
+            currentNumber = calculator.noMemorizeCalculate(currentNumber, BigDecimal.valueOf(100), Calculator.Operation.DIVIDE);
             calculator.setFirstNumber(currentNumber);
             numberToStringBuilder();
             showNumber();
         } else if (calculator.getOperation().equals(Calculator.Operation.MULTIPLY)
                 || calculator.getOperation().equals(Calculator.Operation.DIVIDE)) {
-            currentNumber = calculator.noMemorizeCalculate(currentNumber, 100.0, Calculator.Operation.DIVIDE);
+            currentNumber = calculator.noMemorizeCalculate(currentNumber, BigDecimal.valueOf(100), Calculator.Operation.DIVIDE);
             calculator.setSecondNumber(currentNumber);
             numberToStringBuilder();
             showNumber();
             updateLastOperation();
         } else {
-            currentNumber = calculator.noMemorizeCalculate(currentNumber, 100.0, Calculator.Operation.DIVIDE);
+            currentNumber = calculator.noMemorizeCalculate(currentNumber, BigDecimal.valueOf(100), Calculator.Operation.DIVIDE);
             currentNumber = calculator.noMemorizeCalculate(calculator.getFirstNumber(), currentNumber, Calculator.Operation.MULTIPLY);
             calculator.setSecondNumber(currentNumber);
             numberToStringBuilder();
@@ -285,7 +288,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void negateNumber() {
-        currentNumber = calculator.noMemorizeCalculate(currentNumber, -1.0, Calculator.Operation.MULTIPLY);
+        currentNumber = calculator.noMemorizeCalculate(currentNumber, BigDecimal.valueOf(-1), Calculator.Operation.MULTIPLY);
         numberToStringBuilder();
         showNumber();
     }
@@ -296,13 +299,14 @@ public class MainActivity extends AppCompatActivity {
         } else {
             calculator.setSecondNumber(currentNumber);
         }
-        updateLastOperation();
-        currentNumber = calculator.calculate();
-        isCalculated = true;
-        numberToStringBuilder();
-        if (currentNumber % 1 == 0) {
-            numberStringBuilder.setLength(numberStringBuilder.length() - 2);
+        if (calculator.calculate() == null) {
+            inputTextView.setText(R.string.division_by_zero);
+        } else {
+            updateLastOperation();
+            currentNumber = calculator.calculate();
+            isCalculated = true;
+            numberToStringBuilder();
+            showNumber();
         }
-        showNumber();
     }
 }

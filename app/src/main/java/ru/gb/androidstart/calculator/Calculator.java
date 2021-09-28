@@ -3,13 +3,15 @@ package ru.gb.androidstart.calculator;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.math.BigDecimal;
+
 import androidx.annotation.NonNull;
 
 public class Calculator implements Parcelable {
 
-    private double firstNumber;
-    private double secondNumber;
-    private double resultNumber;
+    private BigDecimal firstNumber;
+    private BigDecimal secondNumber;
+    private BigDecimal resultNumber;
     private Operation operation;
 
     public enum Operation {
@@ -32,24 +34,24 @@ public class Calculator implements Parcelable {
     }
 
     public Calculator() {
-        firstNumber = 0;
-        secondNumber = 0;
-        resultNumber = 0;
+        firstNumber = new BigDecimal(0);
+        secondNumber =new BigDecimal(0);
+        resultNumber = new BigDecimal(0);
         operation = Operation.ADD;
     }
 
     protected Calculator(Parcel in) {
-        firstNumber = in.readDouble();
-        secondNumber = in.readDouble();
-        resultNumber = in.readDouble();
+        firstNumber = (BigDecimal) in.readSerializable();
+        secondNumber = (BigDecimal) in.readSerializable();
+        resultNumber = (BigDecimal) in.readSerializable();
         operation = Operation.values()[in.readInt()];
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeDouble(firstNumber);
-        dest.writeDouble(secondNumber);
-        dest.writeDouble(resultNumber);
+        dest.writeSerializable(firstNumber);
+        dest.writeSerializable(secondNumber);
+        dest.writeSerializable(resultNumber);
         dest.writeInt(operation.ordinal());
     }
 
@@ -70,55 +72,63 @@ public class Calculator implements Parcelable {
         }
     };
 
-    public double calculate() {
+    public BigDecimal calculate() {
         switch (operation) {
             case ADD:
-                resultNumber = firstNumber + secondNumber;
+                resultNumber = firstNumber.add(secondNumber);
                 break;
             case SUBTRACT:
-                resultNumber = firstNumber - secondNumber;
+                resultNumber = firstNumber.subtract(secondNumber);
                 break;
             case MULTIPLY:
-                resultNumber = firstNumber * secondNumber;
+                resultNumber = firstNumber.multiply(secondNumber);
                 break;
             case DIVIDE:
-                resultNumber = firstNumber / secondNumber;
+                if (secondNumber.compareTo(BigDecimal.ZERO) == 0) {
+                    resultNumber = null;
+                } else {
+                    resultNumber = firstNumber.divide(secondNumber, 15, BigDecimal.ROUND_HALF_UP);
+                }
                 break;
         }
         return resultNumber;
     }
 
-    public double noMemorizeCalculate(double outerFirstNumber, double outerSecondNumber, Operation outerOperation) {
+    public BigDecimal noMemorizeCalculate(BigDecimal outerFirstNumber, BigDecimal outerSecondNumber, Operation outerOperation) {
         switch (outerOperation) {
             case ADD:
-                resultNumber = outerFirstNumber + outerSecondNumber;
+                resultNumber = outerFirstNumber.add(outerSecondNumber);
                 break;
             case SUBTRACT:
-                resultNumber = outerFirstNumber - outerSecondNumber;
+                resultNumber = outerFirstNumber.subtract(outerSecondNumber);
                 break;
             case MULTIPLY:
-                resultNumber = outerFirstNumber * outerSecondNumber;
+                resultNumber = outerFirstNumber.multiply(outerSecondNumber);
                 break;
             case DIVIDE:
-                resultNumber = outerFirstNumber / outerSecondNumber;
+                if (outerSecondNumber.compareTo(BigDecimal.ZERO) == 0) {
+                    resultNumber = null;
+                } else {
+                    resultNumber = outerFirstNumber.divide(outerSecondNumber, 15, BigDecimal.ROUND_HALF_UP);
+                }
                 break;
         }
         return resultNumber;
     }
 
-    public double getFirstNumber() {
+    public BigDecimal getFirstNumber() {
         return firstNumber;
     }
 
-    public void setFirstNumber(double firstNumber) {
+    public void setFirstNumber(BigDecimal firstNumber) {
         this.firstNumber = firstNumber;
     }
 
-    public double getSecondNumber() {
+    public BigDecimal getSecondNumber() {
         return secondNumber;
     }
 
-    public void setSecondNumber(double secondNumber) {
+    public void setSecondNumber(BigDecimal secondNumber) {
         this.secondNumber = secondNumber;
     }
 

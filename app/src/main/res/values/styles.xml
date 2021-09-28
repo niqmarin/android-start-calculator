@@ -22,4 +22,18 @@
     <style name="CalcButtonStyle.Operation">
         <item name="android:backgroundTint">@color/grey_400</item>
     </style>
+
+    <style name="SettingsButtonStyle">
+        <item name="android:layout_width">@dimen/theme_settings_button_size</item>
+        <item name="android:layout_height">@dimen/theme_settings_button_size</item>
+        <item name="android:layout_gravity">right</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="RadioButtonStyle">
+        <item name="android:layout_marginLeft">@dimen/radio_button_margin</item>
+        <item name="android:paddingLeft">@dimen/radio_button_padding</item>
+        <item name="android:textSize">@dimen/text_view_small_text_size</item>
+        <item name="android:textColor">@color/grey_700</item>
+    </style>
 </resources>

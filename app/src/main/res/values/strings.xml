@@ -21,4 +21,8 @@
     <string name="symbol_percent">%</string>
     <string name="digit_0">0</string>
     <string name="symbol_point">,</string>
+    <string name="settings_activity_title">Настройки темы:</string>
+    <string name="day_theme">Дневная тема</string>
+    <string name="night_theme">Ночная тема</string>
+    <string name="division_by_zero">Деление на ноль не поддерживается</string>
 </resources>
